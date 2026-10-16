@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Q_Nest</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script>tailwind.config={theme:{extend:{colors:{bg:"var(--bg)",card:"var(--card)",fg:"var(--fg)",mut:"var(--mut)",bd:"var(--bd)",acc:"var(--acc)",accS:"var(--accS)",okc:"var(--ok)",badc:"var(--bad)",okS:"var(--okS)",badS:"var(--badS)"}}}}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<style>
+:root{--bg:#f6f5ff;--card:#fff;--fg:#1e1b3a;--mut:#6b6890;--bd:#e4e1f5;--acc:#6d4aff;--accS:#ece8ff;--ok:#0f9d6b;--bad:#e11d48;--okS:#d9f7ea;--badS:#fde2e6;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b14;--card:#14141f;--fg:#e8e8f5;--mut:#9a9ab8;--bd:#26263a;--acc:#8b6dff;--accS:#221d44;--ok:#34d399;--bad:#fb7185;--okS:#0e3a2c;--badS:#3f1620;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b0b14;--card:#14141f;--fg:#e8e8f5;--mut:#9a9ab8;--bd:#26263a;--acc:#8b6dff;--accS:#221d44;--ok:#34d399;--bad:#fb7185;--okS:#0e3a2c;--badS:#3f1620;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:'Cairo',system-ui,sans-serif}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect}=React;
+const P={cell:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
+bm:"m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z",xc:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M15 9l-6 6 M9 9l6 6",
+pen:"M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z",ai:"M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z",
+rot:"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8 M3 3v5h5",clk:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2",
+shield:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",plus:"M5 12h14 M12 5v14",trash:"M3 6h18 M19 6l-1 14H6L5 6 M8 6V4h8v2",
+ok:"M20 6 9 17l-5-5",x:"M18 6 6 18 M6 6l12 12",home:"M3 11l9-8 9 8 M5 10v10h14V10",
+sun:"M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10z M12 1v2 M12 21v2 M4.2 4.2l1.4 1.4 M18.4 18.4l1.4 1.4 M1 12h2 M21 12h2 M4.2 19.8l1.4-1.4 M18.4 5.6l1.4-1.4",
+moon:"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z",
+heart:"M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z",flask:"M10 2v7.5L4 20a1 1 0 0 0 1 1.5h14a1 1 0 0 0 1-1.5L14 9.5V2 M8.5 2h7",act:"M22 12h-4l-3 9L9 3l-3 9H2",book:"M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"};
+const I=({n,c="w-5 h-5"})=><svg viewBox="0 0 24 24" className={c} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">{P[n].split(" M").map((d,i)=><path key={i} d={i?"M"+d:d}/>)}</svg>;
+
+const SUBJ0=[{id:"cell",sem:1,name:"بيولوجيا الخلية",ic:"cell",em:"🔬"}];
+const CH0=[["c1","الغشاء الخلوي"],["c2","الميتوكوندريا والطاقة"],["c3","النواة والانقسام"]].map(([id,name])=>({id,sub:"cell",name}));
+let SUBJ=SUBJ0,CH=CH0;
+const SB=c=>(CH.find(x=>x.id===c)||{}).sub;
+const CL=c=>{const s=SUBJ.find(x=>x.id===c.sub)||{};return 'الفصل '+s.sem+' — '+s.name+' — '+c.name};
+const PRE=[['التاريخ','📜'],['بيولوجيا','🧬'],['اللغة الإنكليزية','🔤'],['الفيزياء','⚛️'],['الكيمياء','🧪']];
+const EMO=['📜','🧬','🔤','⚛️','🧪','📐','🌍','📖','🧠','🦠','🫡','🦴','🔬','💻','⚖️','🏛️','📊','🎨','🕌','📚'];
+const SG=n=>{n=(n||'').toLowerCase();const m=[['تاريخ','📜'],['بيولوج','🧬'],['أحياء','🧬'],['احياء','🧬'],['انكليز','🔤'],['إنكليز','🔤'],['انجليز','🔤'],['إنجليز','🔤'],['english','🔤'],['فيزي','⚛️'],['كيمي','🧪'],['رياض','📐'],['جغراف','🌍'],['عرب','📖'],['فلسف','🧠'],['حاسوب','💻'],['تشريح','🦴'],['علوم','🔬'],['دين','🕌'],['إسلام','🕌'],['اسلام','🕌']];const f=m.find(x=>n.includes(x[0]));return f&&f[1]};
+const DEMO=[
+["c1","ما النموذج الذي يصف بنية الغشاء الخلوي؟",["النموذج الفسيفسائي السائل","نموذج الشريحة الواحدة","نموذج الصندوق","النموذج الصلب"],0,"الغشاء طبقة ثنائية من الفوسفوليبيد تسبح فيها بروتينات متحركة، ولهذا سُمّي فسيفسائياً سائلاً."],
+["c1","أي مكوّن يمنح الغشاء الخلوي مرونة ويثبّت سيولته؟",["الكوليسترول","الغلوكوز","اليوراسيل","السليلوز"],0,"الكوليسترول يوضع بين الفوسفوليبيدات فيمنع تصلب الغشاء في البرودة وفرط سيولته في الحرارة."],
+["c1","الانتشار الميسّر يتميز بأنه:",["يحتاج ATP","يتم عبر بروتينات ناقلة دون طاقة","ضد تدرج التركيز","خاص بالماء فقط"],1,"ينقل مواد باتجاه تدرج التركيز بواسطة بروتينات ناقلة دون صرف ATP، بخلاف النقل النشط."],
+["c2","أين تحدث سلسلة نقل الإلكترون في الخلية الحيوانية؟",["الغشاء الداخلي للميتوكوندريا","السيتوبلازم","النواة","الجهاز الغولجي"],0,"تتوضع معقدات السلسلة في الغشاء الداخلي المطوي (العرف) لتوليد التدرج البروتوني وATP."],
+["c2","ما الناتج الصافي من تحلل الغلوكوز (Glycolysis)؟",["2 ATP","38 ATP","0 ATP","32 ATP"],0,"يعطي التحلل السكري صافي 2 ATP مع جزيئي بيروفات و2 NADH، ويحدث في السيتوبلازم."],
+["c2","أي عضية تحتوي DNA خاصاً بها بجانب النواة؟",["الريبوسوم","الميتوكوندريا","الليسوسوم","الشبكة الملساء"],1,"للميتوكوندريا DNA حلقي صغير، ما يدعم نظرية التعايش الداخلي."],
+["c3","في أي طور من الانقسام المتساوي تصطف الكروموسومات على خط الاستواء؟",["التمهيدي","الاستوائي","الانفصالي","النهائي"],1,"في الطور الاستوائي ترتبط الكروموسومات بخيوط المغزل وتصطف في منتصف الخلية."],
+["c3","كم عدد الخلايا الناتجة عن الانقسام المنصّف الكامل لخلية واحدة؟",["2","4","8","1"],1,"انقسامان متتاليان ينتجان 4 خلايا أحادية الصيغة الصبغية."]
+].map((r,k)=>({id:"q"+(k+1),n:k,sub:"cell",ch:r[0],t:r[1],o:r[2],a:r[3],e:r[4],m:k===1}));
+
+const load=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const card="bg-card border border-bd rounded-2xl";
+const b="px-3 py-2 rounded-xl font-semibold transition flex items-center justify-center gap-2 text-sm ";
+const pri=b+"bg-acc text-white hover:opacity-90", sec=b+"bg-card border border-bd hover:bg-accS";
+const Bar=({v,c="bg-acc"})=><div className="h-2.5 rounded-full bg-accS overflow-hidden"><div className={"h-full rounded-full transition-all "+c} style={{width:v+"%"}}/></div>;
+const fmt=s=>Math.floor(Math.abs(s)/60)+":"+String(Math.abs(s)%60).padStart(2,"0");
+const L="أبجد";
+const H=async s=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode('qn:'+s)))].map(x=>x.toString(16).padStart(2,'0')).join('');
+
+function Feed({list,title,back,ctx}){
+ const{pg,setPg,bm,setBm,nt,setNt,sm}=ctx;
+ const init=()=>{const s={};list.forEach(q=>{if(pg[q.id])s[q.id]=pg[q.id].s});return s};
+ const[mode,setMode]=useState("practice"),[sel,setSel]=useState(init),[pend,setPend]=useState({}),[inst,setInst]=useState(false),[tm,setTm]=useState(true),[mins,setMins]=useState(10),[t,setT]=useState(0),[done,setDone]=useState(false),[ai,setAi]=useState({}),[nq,setNq]=useState(null),[nv,setNv]=useState("");
+ const ex=mode==="exam",limit=mins*60;
+ useEffect(()=>{if(!ex||done)return;const h=setInterval(()=>setT(x=>x+1),1000);return()=>clearInterval(h)},[ex,done]);
+ useEffect(()=>{if(ex&&!done&&tm&&t>=limit)finish()},[t]);
+ const rec=(q,s)=>setPg(p=>({...p,[q.id]:{s,ok:s===q.a}}));
+ const finish=()=>{list.forEach(q=>sel[q.id]!==undefined&&rec(q,sel[q.id]));setDone(true)};
+ const swap=m=>{setMode(m);setT(0);setDone(false);setSel(m==="exam"?{}:init());setPend({})};
+ const reset=()=>{setPg(p=>{const n={...p};list.forEach(q=>delete n[q.id]);return n});setSel({});setT(0);setDone(false);setPend({});setAi({})};
+ const rv=q=>ex?done:sel[q.id]!==undefined;
+ const confirm=(q,k)=>{if(ex||sel[q.id]!==undefined)return;setSel(s=>({...s,[q.id]:k}));rec(q,k)};
+ const pick=(q,k)=>{if(ex){if(!done)setSel(s=>({...s,[q.id]:k}))}else if(sel[q.id]===undefined)inst?confirm(q,k):setPend(p=>({...p,[q.id]:k}))};
+ const ask=async q=>{
+  if(ai[q.id]){setAi(a=>{const n={...a};delete n[q.id];return n});return}
+  setAi(a=>({...a,[q.id]:{l:1}}));
+  let x=q.e+"\n"+q.o.map((o,k)=>(k===q.a?"✓ صحيح: ":"✗ خاطئ: ")+o).join("\n");
+  if(sm){try{const r=await sm("أنت أستاذ جامعي خبير في العلوم الطبية والحيوية يشرح لطلاب. اشرح سؤال الامتحان التالي بالعربية المبسطة مع كتابة المصطلحات العلمية بالإنجليزية بين قوسين. استخدم هذا الترتيب: 1) فكرة السؤال 2) لماذا الإجابة الصحيحة صحيحة 3) لماذا كل خيار آخر خاطئ 4) نصيحة قصيرة للحفظ. كن دقيقاً علمياً ولا تخترع معلومات، وإن وجدت خطأً علمياً في السؤال أو الإجابة المعطاة فنبّه عليه بوضوح. اكتب نصاً عادياً دون رموز Markdown.\nالسؤال: "+q.t+"\n"+q.o.map((o,k)=>L[k]+") "+o).join("\n")+"\nالصحيح: "+L[q.a]+"\nملاحظة المعلم: "+q.e,{modelTier:'complex'});x=r.text}catch(e){}}
+  setAi(a=>a[q.id]?{...a,[q.id]:{x}}:a)};
+ const score=list.filter(q=>sel[q.id]===q.a).length;
+ const rvl=list.filter(q=>rv(q)&&sel[q.id]!==undefined),right=rvl.filter(q=>sel[q.id]===q.a).length,wrong=rvl.length-right;
+ return<div className="space-y-4">
+ <div className="flex items-center justify-between"><button onClick={back} className={sec}><I n="home" c="w-4 h-4"/>رجوع</button><h2 className="font-bold">{title}</h2><span className="w-16"/></div>
+ <div className={card+" p-3 space-y-3 sticky top-2 z-10 shadow-sm"}>
+  <div className='grid grid-cols-3 gap-2 text-center'>{[['📊','إجمالي الأسئلة',list.length,''],['✅','صحيح',right,'text-okc'],['❌','خاطئ',wrong,'text-badc']].map(([i,n,v,c])=><div key={n} className='rounded-xl bg-accS py-2'><div className={'text-xl font-bold '+c}>{v}</div><div className='text-xs text-mut'>{i} {n}</div></div>)}</div>
+  <Bar v={list.length?Object.keys(sel).length/list.length*100:0}/>
+  <div className="grid grid-cols-2 gap-2">{[["practice","وضع التدريب"],["exam","وضع الاختبار"]].map(([k,a])=><button key={k} onClick={()=>swap(k)} className={b+(mode===k?"bg-acc text-white":"bg-accS")}>{a}</button>)}</div>
+  <div className="flex flex-wrap items-center gap-3 text-sm">
+   {!ex&&<label className="flex items-center gap-2"><input type="checkbox" className="w-4 h-4 accent-violet-600" checked={inst} onChange={e=>setInst(e.target.checked)}/>تفعيل الحل الفوري</label>}
+   {ex&&<><label className="flex items-center gap-2"><input type="checkbox" className="w-4 h-4 accent-violet-600" checked={tm} onChange={e=>setTm(e.target.checked)}/>مؤقت</label>
+    {tm&&!done&&<><input type="number" min="1" value={mins} onChange={e=>setMins(Math.max(1,+e.target.value||1))} className="w-16 bg-bg border border-bd rounded-lg px-2 py-1 text-center"/><span className="text-mut">دقيقة</span></>}
+    {!done&&<span className={"flex items-center gap-1 font-mono font-bold "+(tm&&limit-t<30?"text-badc":"text-acc")}><I n="clk" c="w-4 h-4"/>{tm?fmt(limit-t):fmt(t)}</span>}
+    {!done&&<button onClick={finish} className={b+"bg-okc text-white mr-auto"}>إنهاء الاختبار</button>}</>}
+   <button onClick={reset} className={sec+" mr-auto"}><I n="rot" c="w-4 h-4"/>إعادة الاختبار / تصفير</button>
+  </div>
+ </div>
+ {ex&&done&&<div className={card+" p-5 text-center bg-accS"}><div className="text-3xl font-bold text-acc">{score} / {list.length}</div><div className="text-mut mt-1">النتيجة النهائية • {Math.round(score/Math.max(list.length,1)*100)}%</div></div>}
+ {!list.length&&<p className="text-center text-mut py-16">لا توجد أسئلة في هذا القسم بعد.</p>}
+ {list.map((q,qi)=>{const r=rv(q),cur=ex?sel[q.id]:(sel[q.id]??pend[q.id]),isB=bm.includes(q.id);
+  return<div key={q.id} className={card+" p-4 space-y-3"}>
+  <div className="flex items-center gap-2 text-xs text-mut"><span className="font-bold text-acc">سؤال {qi+1}</span>{q.m&&<span className="bg-accS text-acc px-2 py-0.5 rounded-full">معدّل</span>}</div>
+  <h3 className="font-bold leading-8">{q.t}</h3>
+  {q.o.map((o,k)=>{let c="border-bd hover:bg-accS";
+   if(r){if(k===q.a)c="border-okc bg-okS";else if(k===sel[q.id])c="border-badc bg-badS"}else if(k===cur)c="border-acc bg-accS";
+   return<button key={k} onClick={()=>pick(q,k)} onDoubleClick={()=>confirm(q,k)} className={"w-full text-right p-3 rounded-xl border flex items-center gap-3 transition "+c}><span className="w-7 h-7 rounded-lg bg-accS text-acc grid place-items-center text-sm shrink-0">{L[k]}</span><span className="flex-1">{o}</span>{r&&k===q.a&&<I n="ok" c="w-5 h-5 text-okc"/>}{r&&k===sel[q.id]&&k!==q.a&&<I n="x" c="w-5 h-5 text-badc"/>}</button>})}
+  {!ex&&!r&&pend[q.id]!==undefined&&<button onClick={()=>confirm(q,pend[q.id])} className={pri+" w-full"}><I n="ok" c="w-4 h-4"/>تحقق من الإجابة</button>}{!ex&&!r&&pend[q.id]===undefined&&!inst&&<p className="text-xs text-mut">انقر مرتين على الخيار لفحصه فوراً، أو اختر ثم اضغط «تحقق من الإجابة».</p>}
+  <div className="grid grid-cols-3 gap-2 pt-1">
+   <button disabled={!r} onClick={()=>ask(q)} className={"aspect-[2/1] sm:aspect-[3/1] rounded-xl border border-bd flex flex-col items-center justify-center gap-1 text-xs font-semibold hover:bg-accS disabled:opacity-40 "+(ai[q.id]?"bg-accS text-acc":"")}><I n="ai" c="w-5 h-5 text-acc"/>شرح AI</button>
+   <button onClick={()=>setBm(x=>isB?x.filter(i=>i!==q.id):[...x,q.id])} className={"aspect-[2/1] sm:aspect-[3/1] rounded-xl border border-bd flex flex-col items-center justify-center gap-1 text-xs font-semibold hover:bg-accS "+(isB?"bg-accS text-acc":"")}><I n="bm" c="w-5 h-5"/>{isB?"محفوظ":"حفظ السؤال"}</button>
+   <button onClick={()=>{setNq(q.id);setNv(nt[q.id]||"")}} className={"aspect-[2/1] sm:aspect-[3/1] rounded-xl border border-bd flex flex-col items-center justify-center gap-1 text-xs font-semibold hover:bg-accS "+(nt[q.id]?"bg-accS text-acc":"")}><I n="pen" c="w-5 h-5"/>{nt[q.id]?"ملاحظتي":"إضافة ملاحظة"}</button>
+  </div>
+  {ai[q.id]&&<div className="rounded-xl border border-bd bg-accS p-4 text-sm leading-7 whitespace-pre-wrap"><div className="font-bold text-acc flex items-center gap-2 mb-1"><I n="ai" c="w-4 h-4"/>شرح AI</div>{ai[q.id].l?"جارٍ التحليل...":ai[q.id].x}</div>}
+  {nt[q.id]&&<div className="rounded-xl bg-okS p-3 text-sm">📝 {nt[q.id]}</div>}
+ </div>})}
+ {nq&&<div className="fixed inset-0 bg-black/60 grid place-items-center p-4 z-50"><div className={card+" p-5 w-full max-w-md space-y-3"}><h4 className="font-bold">ملاحظتي على السؤال</h4><textarea value={nv} onChange={e=>setNv(e.target.value)} rows="4" className="w-full bg-bg border border-bd rounded-xl p-3" placeholder="اكتب ملاحظتك..."/><div className="flex gap-2"><button className={pri+" flex-1"} onClick={()=>{setNt(n=>{const x={...n};nv.trim()?x[nq]=nv.trim():delete x[nq];return x});setNq(null)}}>حفظ</button><button className={sec} onClick={()=>setNq(null)}>إلغاء</button></div></div></div>}
+ </div>;
+}
+
+function QMan({qs,onSave,onDel,msg}){
+ const e0={ch:(CH[0]||{}).id,t:"",o:["","","",""],a:0,e:""};
+ const[f,setF]=useState(e0),[ed,setEd]=useState(null);
+ const ok=f.t.trim()&&f.o.every(x=>x.trim());
+ const inp="w-full bg-bg border border-bd rounded-xl px-3 py-2";
+ return<div className="space-y-4">
+ <div className="flex items-center justify-between"></div>
+ {msg&&<p className="text-sm text-badc">{msg}</p>}
+ <div className={card+" p-4 space-y-3"}>
+  <h3 className="font-bold">{ed?"تعديل السؤال (يُوسم تلقائياً كمعدّل)":"إضافة سؤال جديد"}</h3>
+  <select className={inp} value={f.ch} onChange={x=>setF({...f,ch:x.target.value})}>{CH.map(c=><option key={c.id} value={c.id}>{CL(c)}</option>)}</select>
+  <textarea className={inp} rows="2" placeholder="نص السؤال" value={f.t} onChange={x=>setF({...f,t:x.target.value})}/>
+  {f.o.map((o,k)=><div key={k} className="flex items-center gap-2"><input type="radio" className="accent-emerald-600 w-5 h-5" checked={f.a===k} onChange={()=>setF({...f,a:k})}/><input className={inp} placeholder={"الخيار "+L[k]} value={o} onChange={x=>setF({...f,o:f.o.map((y,j)=>j===k?x.target.value:y)})}/></div>)}
+  <p className="text-xs text-mut">الدائرة المحددة = الإجابة الصحيحة</p>
+  <textarea className={inp} rows="2" placeholder="شرح السؤال" value={f.e} onChange={x=>setF({...f,e:x.target.value})}/>
+  <div className="flex gap-2"><button disabled={!ok} onClick={async()=>{await onSave(f,ed);setF(e0);setEd(null)}} className={pri+" disabled:opacity-40"}><I n={ed?"pen":"plus"} c="w-4 h-4"/>{ed?"حفظ التعديل":"إضافة"}</button>{ed&&<button className={sec} onClick={()=>{setEd(null);setF(e0)}}>إلغاء</button>}</div>
+ </div>
+ {qs.map(q=><div key={q.id} className={card+" p-3 flex items-center gap-2"}><div className="flex-1 text-sm">{q.t}{q.m&&<span className="mr-2 text-xs text-acc">معدّل</span>}</div>
+  <button className={sec} onClick={()=>{setEd(q.id);setF({ch:q.ch,t:q.t,o:[...q.o],a:q.a,e:q.e});scrollTo(0,0)}}><I n="pen" c="w-4 h-4"/></button>
+  <button className={sec+" text-badc"} onClick={()=>onDel(q.id)}><I n="trash" c="w-4 h-4"/></button></div>)}
+ </div>;
+}
+
+function Stats({qs,sts}){
+ const now=Date.now(),act=sts.filter(s=>now-(s.last||0)<6048e5).length;
+ let tot=0,cor=0;const ch={},sj={},mis={};
+ sts.forEach(s=>Object.entries(s.pg||{}).forEach(([id,r])=>{tot++;cor+=r;const q=qs.find(x=>x.id===id);if(q){ch[q.ch]=(ch[q.ch]||0)+1;sj[q.sub]=(sj[q.sub]||0)+1}const m=mis[id]||(mis[id]={w:0,n:0});m.n++;if(!r)m.w++}));
+ const wr=Object.entries(mis).filter(([,m])=>m.w).map(([id,m])=>({q:qs.find(x=>x.id===id),...m})).filter(x=>x.q).sort((a,b)=>b.w-a.w||b.w/b.n-a.w/a.n).slice(0,5);
+ const pc=tot?Math.round(cor/tot*100):0;
+ const List=({t,rows})=>{const mx=Math.max(1,...rows.map(r=>r[1]));return<div className={card+' p-4 space-y-3'}><h3 className='font-bold'>{t}</h3>{rows.map(([n,v])=><div key={n}><div className='flex justify-between text-sm mb-1'><span>{n}</span><span className='text-mut'>{v} إجابة</span></div><Bar v={v/mx*100} c='bg-okc'/></div>)}</div>};
+ return<div className='space-y-4'>
+  <div className='grid grid-cols-2 gap-3'>{[['المستخدمون',sts.length],['نشطون (7 أيام)',act],['الأسئلة المجابة',tot],['نسبة الصحيح',pc+'%']].map(([a,b])=><div key={a} className={card+' p-4 text-center'}><div className='text-2xl font-bold text-acc'>{b}</div><div className='text-xs text-mut'>{a}</div></div>)}</div>
+  <div className={card+' p-4 space-y-2'}><div className='flex justify-between text-sm'><span className='text-okc'>صحيحة {cor}</span><span className='text-badc'>خاطئة {tot-cor}</span></div><div className='h-3 rounded-full bg-badS overflow-hidden'><div className='h-full bg-okc' style={{width:pc+'%'}}/></div></div>
+  <List t='أكثر المواد حلّاً' rows={SUBJ.map(s=>[s.name,sj[s.id]||0]).sort((a,b)=>b[1]-a[1])}/>
+  <List t='أكثر الفصول حلّاً' rows={CH.map(c=>[c.name,ch[c.id]||0]).sort((a,b)=>b[1]-a[1])}/>
+  <div className={card+' p-4 space-y-3'}><h3 className='font-bold'>الأسئلة الأكثر خطأً</h3>{!wr.length&&<p className='text-sm text-mut'>لا توجد أخطاء مسجّلة بعد.</p>}{wr.map(x=><div key={x.q.id} className='text-sm border-b border-bd pb-2 last:border-0'><div>{x.q.t}</div><div className='text-xs text-badc mt-1'>أخطأ فيه {x.w} من {x.n} ({Math.round(x.w/x.n*100)}%)</div></div>)}</div>
+  <p className='text-xs text-mut'>تُحتسب آخر محاولة لكل طالب في كل سؤال.</p></div>;
+}
+function Pw({setPw}){
+ const[a,setA]=useState(''),[c,setC]=useState(''),[r,setR]=useState('');
+ const i='w-full bg-bg border border-bd rounded-xl px-3 py-2';
+ return<div className={card+' p-4 space-y-3'}><h3 className='font-bold'>تغيير كلمة السر</h3><input type='password' className={i} placeholder='كلمة السر الجديدة' value={a} onChange={e=>setA(e.target.value)}/><input type='password' className={i} placeholder='تأكيد كلمة السر' value={c} onChange={e=>setC(e.target.value)}/>{r&&<p className='text-sm text-okc'>{r}</p>}<button disabled={a.length<4||a!==c} className={pri+' disabled:opacity-40'} onClick={async()=>{const k=await setPw(a);setR(k?'تم تحديث كلمة السر':'تعذر التحديث: لا تملك صلاحية الكتابة');if(k){setA('');setC('')}}}>تحديث</button><p className='text-xs text-mut'>4 أحرف على الأقل.</p></div>;
+}
+function Struct({qs,subs,chs,addSub,delSub,addCh,delCh}){
+ const[nm,setNm]=useState(''),[sm,setSm]=useState(1),[em,setEm]=useState('📚'),[man,setMan]=useState(false),[cn,setCn]=useState({}),[cf,setCf]=useState(null);
+ const inp='bg-bg border border-bd rounded-xl px-3 py-2 w-full';
+ const Del=({id,n,on})=><button onClick={()=>{if(cf===id){on();setCf(null)}else setCf(id)}} className={sec+' text-badc !px-2 !py-1'}>{cf===id?'تأكيد الحذف'+(n?' ('+n+' سؤال)':''):<I n='trash' c='w-4 h-4'/>}</button>;
+ return<div className='space-y-4'>
+  <div className={card+' p-4 space-y-3'}><h3 className='font-bold'>إضافة مادة</h3>
+   <input className={inp} placeholder='اسم المادة' value={nm} onChange={e=>{const v=e.target.value;setNm(v);if(!man){const g=SG(v);if(g)setEm(g)}}}/>
+   <div className='grid grid-cols-2 gap-2'>{[1,2].map(s=><button key={s} onClick={()=>setSm(s)} className={b+(sm===s?'bg-acc text-white':'bg-accS')}>{s===1?'الفصل الأول':'الفصل الثاني'}</button>)}</div>
+   <div className='flex flex-wrap gap-2'>{EMO.map(k=><button key={k} onClick={()=>{setEm(k);setMan(true)}} className={'w-11 h-11 rounded-xl text-2xl grid place-items-center border transition '+(em===k?'border-acc bg-accS scale-110':'border-bd')}>{k}</button>)}</div>
+   <button disabled={!nm.trim()} className={pri+' disabled:opacity-40'} onClick={async()=>{if(await addSub({name:nm.trim(),sem:sm,em})){setNm('');setMan(false)}}}><span className='text-lg'>{em}</span>إضافة المادة</button>
+   <button className={sec+' w-full'} onClick={async()=>{for(const [k,p] of PRE.entries()){if(!subs.some(x=>x.name===p[0]))await addSub({name:p[0],sem:sm,em:p[1],k})}}}>✨ إضافة المواد المقترحة للفصل المحدد</button></div>
+  {subs.map(s=>{const cl=chs.filter(c=>c.sub===s.id);return<div key={s.id} className={card+' p-4 space-y-3'}>
+   <div className='flex items-center gap-2'><div className='w-10 h-10 rounded-xl bg-accS grid place-items-center text-xl'>{s.em||<I n={s.ic} c='w-5 h-5'/>}</div><div className='flex-1'><div className='font-bold'>{s.name}</div><div className='text-xs text-mut'>{s.sem===1?'الفصل الأول':'الفصل الثاني'}</div></div><Del id={s.id} n={qs.filter(q=>q.sub===s.id).length} on={()=>delSub(s.id)}/></div>
+   {cl.map(c=><div key={c.id} className='flex items-center gap-2 pr-3 border-r-2 border-bd'><span className='flex-1 text-sm'>{c.name}</span><Del id={c.id} n={qs.filter(q=>q.ch===c.id).length} on={()=>delCh(c.id)}/></div>)}
+   <div className='flex gap-2'><input className={inp} placeholder='اسم فصل جديد' value={cn[s.id]||''} onChange={e=>setCn({...cn,[s.id]:e.target.value})}/><button disabled={!(cn[s.id]||'').trim()} className={pri+' disabled:opacity-40'} onClick={async()=>{if(await addCh(s.id,cn[s.id].trim()))setCn({...cn,[s.id]:''})}}><I n='plus' c='w-4 h-4'/></button></div></div>})}
+  {!subs.length&&<p className='text-center text-mut py-8'>لا توجد مواد.</p>}
+ </div>;
+}
+function Imp({onBulk}){
+ const[t,setT]=useState(''),[ch,setCh]=useState((CH[0]||{}).id),[r,setR]=useState(''),[bz,setBz]=useState(false);
+ const idx=s=>'أاa1'.includes(s)?0:'بb2'.includes(s)?1:'جc3'.includes(s)?2:'دd4'.includes(s)?3:-1;
+ const parse=()=>{const ok=[];let bad=0;t.split(/\n\s*\n/).forEach(bl=>{const ls=bl.split('\n').map(x=>x.trim()).filter(Boolean);if(!ls.length)return;let a=-1,e='';const rest=[];ls.forEach(l=>{let m;if(m=l.match(/^(?:الإجابة|الاجابة|answer)\s*[:：]\s*(.+)$/i))a=idx(m[1].trim()[0].toLowerCase());else if(m=l.match(/^(?:الشرح|explanation)\s*[:：]\s*(.+)$/i))e=m[1];else rest.push(l)});const q=rest[0],o=rest.slice(1).map(x=>x.replace(/^[\(\[]?[أابجدabcd1-4][\)\]\.\-–:]\s*/i,''));if(q&&o.length===4&&a>=0)ok.push({ch,t:q,o,a,e});else bad++});return{ok,bad}};
+ const p=t.trim()?parse():{ok:[],bad:0};
+ return<div className={card+' p-4 space-y-3'}><h3 className='font-bold'>استيراد أسئلة بالجملة</h3>
+  <p className='text-xs text-mut leading-6'>الصق الأسئلة (أو ارفع ملف نصي). افصل بين كل سؤال بسطر فارغ: السطر الأول نص السؤال، ثم 4 خيارات، ثم «الإجابة: أ» وسطر اختياري «الشرح: ...». يمكنك أن تطلب من Claude تحويل أسئلتك إلى هذه الصيغة.</p>
+  <select className='w-full bg-bg border border-bd rounded-xl px-3 py-2' value={ch} onChange={e=>setCh(e.target.value)}>{CH.map(c=><option key={c.id} value={c.id}>{CL(c)}</option>)}</select>
+  <input type='file' accept='.txt,.csv,.md' className='text-sm' onChange={async e=>{const f=e.target.files[0];if(f)setT(await f.text())}}/>
+  <textarea rows='10' value={t} onChange={e=>setT(e.target.value)} className='w-full bg-bg border border-bd rounded-xl p-3 text-sm' placeholder={'ما وظيفة الريبوسوم؟\nأ) بناء البروتين\nب) تخزين الدهون\nج) نقل الأكسجين\nد) هضم الفضلات\nالإجابة: أ\nالشرح: الريبوسوم موقع ترجمة mRNA إلى بروتين.'}/>
+  {t.trim()&&<p className='text-sm'><span className='text-okc'>جاهز: {p.ok.length}</span>{p.bad>0&&<span className='text-badc mr-3'>غير صالح: {p.bad}</span>}</p>}
+  {r&&<p className='text-sm text-okc'>{r}</p>}
+  <button disabled={!p.ok.length||bz} className={pri+' disabled:opacity-40'} onClick={async()=>{setBz(true);const k=await onBulk(p.ok);setBz(false);if(k){setR('تم استيراد '+p.ok.length+' سؤال');setT('')}}}>{bz?'جارٍ الاستيراد...':'استيراد '+p.ok.length+' سؤال'}</button></div>;
+}
+function Admin({qs,sts,onSave,onDel,msg,back,setPw,onBulk,S}){
+ const[tab,setTab]=useState('q');
+ return<div className='space-y-4'><div className='flex items-center justify-between'><button onClick={back} className={sec}><I n='home' c='w-4 h-4'/>رجوع</button><h2 className='font-bold flex items-center gap-2'><I n='shield'/>لوحة الإدارة</h2><span className='w-16'/></div>
+ <div className='grid grid-cols-5 gap-1 p-1 rounded-2xl bg-accS'>{[['q','الأسئلة'],['t','المواد'],['s','الإحصائيات'],['i','استيراد'],['p','كلمة السر']].map(([k,a])=><button key={k} onClick={()=>setTab(k)} className={'py-2 rounded-xl text-xs font-semibold transition '+(tab===k?'bg-acc text-white':'text-mut')}>{a}</button>)}</div>
+ {msg&&tab!=='q'&&<p className='text-sm text-badc'>{msg}</p>}{tab==='q'&&<QMan qs={qs} onSave={onSave} onDel={onDel} msg={msg}/>}{tab==='s'&&<Stats qs={qs} sts={sts}/>}{tab==='t'&&<Struct qs={qs} {...S}/>}{tab==='i'&&<Imp onBulk={onBulk}/>}{tab==='p'&&<Pw setPw={setPw}/>}</div>;
+}
+
+function App(){
+ const[loc,setLoc]=useState(()=>load("qn_q",DEMO)),[pg,setPg]=useState(()=>load("qn_p",{})),[bm,setBm]=useState(()=>load("qn_b",[])),[nt,setNt]=useState(()=>load("qn_n",{}));
+ const[th,setTh]=useState(()=>load("qn_t",matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"));
+ const[db,setDb]=useState(null),[dq,setDq]=useState(null),[u,setU]=useState(null),[sm,setSm]=useState(null),[dbSub,setDbSub]=useState(null),[dbCh,setDbCh]=useState(null),[sd,setSd]=useState(false),[locS,setLocS]=useState(()=>load('qn_s',SUBJ0)),[locC,setLocC]=useState(()=>load('qn_c',CH0)),[adm,setAdm]=useState(false),[pe,setPe]=useState(false),[nm,setNm]=useState(()=>load("qn_name","")),[nin,setNin]=useState(""),[st,setSt]=useState([]),[pwh,setPwh]=useState(()=>load("qn_pw",null)),[uid,setUid]=useState("local"),[gate,setGate]=useState(false),[pv,setPv]=useState(""),[msg,setMsg]=useState("");
+ const[sem,setSem]=useState(1),[v,setV]=useState({n:"home"});
+ useEffect(()=>{document.documentElement.dataset.theme=th;save("qn_t",th)},[th]);
+ useEffect(()=>save("qn_q",loc),[loc]);useEffect(()=>save("qn_p",pg),[pg]);useEffect(()=>save("qn_b",bm),[bm]);useEffect(()=>save("qn_n",nt),[nt]);
+ useEffect(()=>{const c=window.claude;if(!c||!c.use)return;
+  c.use("user").then(x=>{setU(x);if(x&&x.id)x.id().then(setUid).catch(()=>{})}).catch(()=>{});c.use("sample").then(setSm).catch(()=>{});
+  c.use("db").then(d=>{if(!d)return;setDb(d);d.collection("questions").onSnapshot(s=>setDq(s.docs.map(x=>({...x.data(),id:x.id})).sort((a,b)=>a.n-b.n)),()=>{});d.collection('stats').onSnapshot(s=>setSt(s.docs.map(x=>({...x.data(),id:x.id}))),()=>{});d.doc('config/admin').onSnapshot(s=>{const x=s.exists&&s.data();if(x&&x.h)setPwh(x.h)},()=>{});d.collection('subjects').onSnapshot(s=>setDbSub(s.docs.map(x=>({...x.data(),id:x.id})).sort((a,b)=>a.n-b.n)),()=>{});d.collection('chapters').onSnapshot(s=>setDbCh(s.docs.map(x=>({...x.data(),id:x.id})).sort((a,b)=>a.n-b.n)),()=>{});d.doc('config/meta').onSnapshot(s=>setSd(!!s.exists),()=>{})}).catch(()=>{})},[]);
+ useEffect(()=>{save('qn_name',nm);save('qn_s',locS);save('qn_c',locC)},[nm,locS,locC]);
+ useEffect(()=>{if(!db||!nm||uid==='local')return;const h=setTimeout(()=>{const m={};Object.keys(pg).forEach(k=>m[k]=pg[k].ok?1:0);db.doc('stats/'+uid).set({name:nm,last:Date.now(),pg:m}).catch(()=>{})},800);return()=>clearTimeout(h)},[db,nm,uid,pg]);
+ const qs=db?((dq&&dq.length)||sd?(dq||[]):DEMO):loc;
+ const subs=db?((dbSub&&dbSub.length)||sd?(dbSub||[]):SUBJ0):locS,chs=db?((dbCh&&dbCh.length)||sd?(dbCh||[]):CH0):locC;
+ SUBJ=subs;CH=chs;
+ const adminOK=adm;
+ const seed=async()=>{if(!db||sd)return;const w=[];if(!(dq&&dq.length))DEMO.forEach(q=>w.push(db.doc('questions/'+q.id).set(q)));if(!(dbSub&&dbSub.length))SUBJ0.forEach((s,i)=>w.push(db.doc('subjects/'+s.id).set({...s,n:i})));if(!(dbCh&&dbCh.length))CH0.forEach((c,i)=>w.push(db.doc('chapters/'+c.id).set({...c,n:i})));w.push(db.doc('config/meta').set({s:1}));await Promise.all(w);setSd(true)};
+ const onSave=async(f,ed)=>{setMsg("");try{
+  if(db){await seed();const id=ed||"q"+Date.now(),old=qs.find(x=>x.id===ed);await db.doc("questions/"+id).set({n:Date.now(),...(old||{}),...f,id,sub:SB(f.ch),m:!!ed||!!(old&&old.m)})}
+  else setLoc(l=>ed?l.map(q=>q.id===ed?{...q,...f,sub:SB(f.ch),m:true}:q):[...l,{...f,id:"q"+Date.now(),n:Date.now(),sub:SB(f.ch),m:false}])}catch(e){setMsg("تعذر الحفظ: لا تملك صلاحية التحرير.")}};
+ const onDel=async id=>{setMsg("");try{if(db){await seed();await db.doc("questions/"+id).delete()}else setLoc(l=>l.filter(q=>q.id!==id))}catch(e){setMsg("تعذر الحذف: لا تملك صلاحية التحرير.")}};
+ const ctx={pg,setPg,bm,setBm,nt,setNt,sm};
+ const stat=sid=>{const l=qs.filter(q=>q.sub===sid),d=l.filter(q=>pg[q.id]).length;return{l,d,p:l.length?Math.round(d/l.length*100):0}};
+ const mine={};Object.keys(pg).forEach(k=>mine[k]=pg[k].ok?1:0);
+ const sts=db?st:[{id:'me',name:nm,last:Date.now(),pg:mine}];
+ const setPw=async p=>{try{const h=await H(p);if(db)await db.doc('config/admin').set({h});setPwh(h);save('qn_pw',h);return true}catch(e){return false}};
+ const wrt=async fn=>{setMsg('');try{await seed();await fn();return true}catch(e){setMsg('تعذر الحفظ: لا تملك صلاحية الكتابة.');return false}};
+ const addSub=s=>wrt(async()=>{const id='s'+Date.now()+(s.k??''),o={id,sem:s.sem,name:s.name,ic:'book',em:s.em,n:Date.now()+(s.k||0)};if(db)await db.doc('subjects/'+id).set(o);else setLocS(l=>[...l,o])});
+ const delSub=id=>wrt(async()=>{const cs=CH.filter(c=>c.sub===id).map(c=>c.id),qi=qs.filter(q=>q.sub===id).map(q=>q.id);if(db)await Promise.all([db.doc('subjects/'+id).delete(),...cs.map(c=>db.doc('chapters/'+c).delete()),...qi.map(q=>db.doc('questions/'+q).delete())]);else{setLocS(l=>l.filter(s=>s.id!==id));setLocC(l=>l.filter(c=>c.sub!==id));setLoc(l=>l.filter(q=>q.sub!==id))}});
+ const addCh=(sub,name)=>wrt(async()=>{const id='c'+Date.now(),o={id,sub,name,n:Date.now()};if(db)await db.doc('chapters/'+id).set(o);else setLocC(l=>[...l,o])});
+ const delCh=id=>wrt(async()=>{const qi=qs.filter(q=>q.ch===id).map(q=>q.id);if(db)await Promise.all([db.doc('chapters/'+id).delete(),...qi.map(q=>db.doc('questions/'+q).delete())]);else{setLocC(l=>l.filter(c=>c.id!==id));setLoc(l=>l.filter(q=>q.ch!==id))}});
+ const onBulk=async arr=>{setMsg('');try{if(db){await seed();for(let i=0;i<arr.length;i+=10)await Promise.all(arr.slice(i,i+10).map((f,k)=>{const id='q'+Date.now()+'_'+(i+k);return db.doc('questions/'+id).set({...f,id,n:Date.now()+i+k,sub:SB(f.ch),m:false})}))}else setLoc(l=>[...l,...arr.map((f,k)=>({...f,id:'q'+Date.now()+'_'+k,n:Date.now()+k,sub:SB(f.ch),m:false}))]);return true}catch(e){setMsg('تعذر الاستيراد: لا تملك صلاحية الكتابة.');return false}};
+ const greet=nm&&<button onClick={()=>{setNin(nm);setNm('')}} className='mb-4 text-mut text-sm'>أهلاً، <b className='text-fg'>{nm}</b> 👋</button>;
+ let body;
+ if(v.n==="admin")body=<Admin qs={qs} sts={sts} setPw={setPw} onBulk={onBulk} S={{subs,chs,addSub,delSub,addCh,delCh}} onSave={onSave} onDel={onDel} msg={msg} back={()=>setV({n:"home"})}/>;
+ else if(v.n==="quiz")body=<Feed key={v.k} list={v.ids.map(id=>qs.find(q=>q.id===id)).filter(Boolean)} title={v.t} ctx={ctx} back={()=>setV({n:"subj",s:v.s})}/>;
+ else if(v.n==="subj"){
+  const S=SUBJ.find(x=>x.id===v.s),{l,d,p}=stat(S.id);
+  const open=(li,t)=>setV({n:"quiz",ids:li.map(q=>q.id),t,s:S.id,k:Date.now()});
+  const sx=[["bm","المحفوظات","text-acc",l.filter(q=>bm.includes(q.id))],["xc","أخطائي","text-badc",l.filter(q=>pg[q.id]&&!pg[q.id].ok)],["pen","الملاحظات","text-okc",l.filter(q=>nt[q.id])],["ai","المعدّلة","text-acc",l.filter(q=>q.m)]];
+  body=<div className="space-y-4">
+   <button onClick={()=>setV({n:"home"})} className={sec}><I n="home" c="w-4 h-4"/>الرئيسية</button>
+   <div className={card+" p-5 space-y-3"}><h2 className="text-xl font-bold flex items-center gap-2">{S.em?<span className="text-3xl">{S.em}</span>:<I n={S.ic} c="w-6 h-6 text-acc"/>}{S.name}</h2>
+    <div className="grid grid-cols-3 text-center text-sm text-mut"><div><div className="text-2xl font-bold text-fg">{l.length}</div>إجمالي الأسئلة</div><div><div className="text-2xl font-bold text-okc">{d}</div>المجابة</div><div><div className="text-2xl font-bold text-acc">{p}%</div>الإنجاز</div></div><Bar v={p}/></div>
+   <div className="grid grid-cols-4 gap-2">{sx.map(([ic,n,c,li])=><button key={n} onClick={()=>open(li,n)} className={card+" p-3 text-center hover:bg-accS transition"}><I n={ic} c={"w-6 h-6 mx-auto "+c}/><div className="text-xs font-semibold mt-1">{n}</div><div className="text-xs text-mut">{li.length}</div></button>)}</div>
+   <h3 className="font-bold pt-1">الفصول</h3>
+   {CH.filter(c=>c.sub===S.id).map(c=>{const cl=l.filter(q=>q.ch===c.id),cd=cl.filter(q=>pg[q.id]).length;return<button key={c.id} onClick={()=>open(cl,c.name)} className={card+" w-full p-4 text-right hover:bg-accS transition space-y-2"}><div className="flex justify-between"><span className="font-semibold">{c.name}</span><span className="text-xs text-mut">{cd}/{cl.length}</span></div><Bar v={cl.length?cd/cl.length*100:0} c="bg-okc"/></button>})}
+  </div>;
+ } else body=<div className="space-y-4">
+  <div className="grid grid-cols-2 gap-2 p-1 rounded-2xl bg-accS">{[1,2].map(s=><button key={s} onClick={()=>setSem(s)} className={"py-2.5 rounded-xl font-semibold transition "+(sem===s?"bg-acc text-white":"text-mut")}>{s===1?"الفصل الأول":"الفصل الثاني"}</button>)}</div>
+  {!SUBJ.some(s=>s.sem===sem)&&<p className="text-center text-mut py-12">لا توجد مواد في هذا الفصل بعد.</p>}
+  {SUBJ.filter(s=>s.sem===sem).map(s=>{const{l,p}=stat(s.id);return<button key={s.id} onClick={()=>setV({n:"subj",s:s.id})} className={card+" w-full p-5 text-right hover:-translate-y-0.5 transition space-y-3"}><div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accS to-bg border border-bd grid place-items-center text-acc text-3xl shadow-sm">{s.em||<I n={s.ic} c="w-6 h-6"/>}</div><div className="font-bold text-lg">{s.name}</div><div className="text-xs text-mut">{l.length} سؤال • {p}% منجز</div><Bar v={p} c="bg-okc"/></button>})}</div>;
+ return<div className="max-w-2xl mx-auto p-4 pb-16">
+  <header className="flex items-center justify-between mb-5"><div className="flex items-center gap-2 select-none" onPointerDown={()=>{window._lp=setTimeout(()=>setGate(true),800)}} onPointerUp={()=>clearTimeout(window._lp)} onPointerLeave={()=>clearTimeout(window._lp)}><div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-emerald-400 grid place-items-center text-white font-bold text-xl" dir="ltr">Q</div><h1 className="text-2xl font-bold text-acc" dir="ltr">Q_Nest</h1></div>
+   <div className="flex gap-2"><button aria-label="تبديل الوضع" onClick={()=>setTh(th==="dark"?"light":"dark")} className={sec}><I n={th==="dark"?"sun":"moon"} c="w-4 h-4"/>{th==="dark"?"فاتح":"داكن"}</button>
+   </div></header>{greet}{body}
+  {gate&&<div className="fixed inset-0 bg-black/60 grid place-items-center p-4 z-50"><div className={card+" p-5 w-full max-w-sm space-y-3"}><h4 className="font-bold">صفحة محمية</h4>
+   <p className='text-sm text-mut'>أدخل كلمة سر الأدمن</p><input type='password' value={pv} onChange={e=>{setPv(e.target.value);setPe(false)}} className='w-full bg-bg border border-bd rounded-xl px-3 py-2 text-center'/>{pe&&<p className='text-xs text-badc'>كلمة السر غير صحيحة</p>}
+   <div className="flex gap-2"><button className={pri+' flex-1'} onClick={async()=>{let g=false;try{g=pwh?(await H(pv))===pwh:pv==='1234'}catch(e){g=!pwh&&pv==='1234'}if(g){setAdm(true);setGate(false);setPv('');setV({n:'admin'})}else setPe(true)}}>دخول</button><button className={sec+' flex-1'} onClick={()=>setGate(false)}>إغلاق</button></div></div></div>}
+  {!nm&&<div className='fixed inset-0 bg-black/70 grid place-items-center p-4 z-[60]'><div className={card+' p-6 w-full max-w-sm space-y-4 text-center'}><div className='text-4xl'>👋</div><h3 className='font-bold text-lg'>مرحباً بك في <span dir='ltr'>Q_Nest</span></h3><p className='text-sm text-mut'>ما اسمك؟</p><input autoFocus value={nin} onChange={e=>setNin(e.target.value)} className='w-full bg-bg border border-bd rounded-xl px-3 py-2 text-center' placeholder='اسم المستخدم'/><button disabled={!nin.trim()} className={pri+' w-full disabled:opacity-40'} onClick={()=>setNm(nin.trim())}>ابدأ</button></div></div>}
+ </div>;
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
